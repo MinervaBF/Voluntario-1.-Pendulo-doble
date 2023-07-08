@@ -123,7 +123,7 @@ int main()
     return 0;
 }
 
-//FUNCIONES PARA CADA VARIABLE
+//FUNCIONES
 
 double thetapuntopunto1(double theta1, double theta2, double thetapunto1, double thetapunto2)
 {
