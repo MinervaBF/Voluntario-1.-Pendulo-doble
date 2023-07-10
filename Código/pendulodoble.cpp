@@ -151,7 +151,7 @@ double thetapunto(double theta1, double theta2, double E)
 
 double s;
 
-s=-sqrt(E+2*g*(cos(theta1))+g*(cos(theta2)));
+s=-sqrt(E-2*g*(cos(theta1))+g*(cos(theta2)));
 return s;
 
 }
