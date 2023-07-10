@@ -10,11 +10,11 @@ double thetapunto(double theta1, double theta2, double hamiltoniano);
 
 int main()
 {
-    double theta1, theta2, vtheta1, vtheta2; 
+    double theta1, theta2, vtheta1, vtheta2;
     double pospendulo1[2], pospendulo2[2];
     double k1[2], k2[2], k3[2], k4[2], l1[2], l2[2], l3[2], l4[2], h, t, E;
     int pasos;
-    FILE *f1, *f2, *f3, *f4;
+    FILE *f1, *f2, *f3, *f4, *f5, *f6;
 
 
     //Abrimos los archivos
@@ -22,16 +22,22 @@ int main()
     f2=fopen("poincaretheta1theta2.txt","w");
     f3=fopen("poincaretheta2theta2punto.txt","w");
     f4=fopen("poincaretheta2theta1punto.txt","w");
+    f5=fopen("todo.txt","w");
+    f6=fopen("curvalis.txt","w");
 
     //Escribimos el tiempo durante el que se representará la animación:
-    pasos=1*3600; //Pasamos horas a segundos.
+    pasos=120; //En segundos.
 
     //Introducimos las condiciones iniciales:
-    theta1=45*M_PI/180;
-	theta2=45*M_PI/180;
-	E=1.;
+    theta1=120*M_PI/180;
+	theta2=30*M_PI/180;
+	E=10;
 	vtheta2=0;
 	vtheta1=thetapunto(theta1,theta2,E);
+
+	// El paso será:
+    h=0.01;
+
 
     //Calculamos las posiciones iniciales de los péndulos:
     pospendulo1[0]=sin(theta1);
@@ -43,8 +49,6 @@ int main()
     fprintf(f1, "%e%c\t%e\n", pospendulo1[0], 44, pospendulo1[1]);
     fprintf(f1, "%e%c\t%e\n", pospendulo2[0], 44, pospendulo2[1]);
     fprintf(f1, "\n");
-
-    h=0.01;
 
     //Comenzamos el ciclo:
 
@@ -93,37 +97,44 @@ int main()
         fprintf(f1, "%e%c\t%e\n", pospendulo2[0], 44, pospendulo2[1]);
         fprintf(f1, "\n"); //Los datos tienen que estar separados en bloques.
 
-        //POINCARÉ THETA 1 Y 2
 
-        //Fijamos thetapunto1 y thetapunto2:
-        if (vtheta1>0.8 && vtheta1<0.9){
-            if (vtheta2>0.5 && vtheta2<0.6)
-                fprintf(f2,"%e%c\t%e\n", theta1, 44, theta2);
+        //POINCARÉ THETA 1 Y 2
+        if ((vtheta1>-0.1) && (vtheta1<0.1)){
+                if ((vtheta2>-0.1) && (vtheta2<0.1))
+                fprintf(f2,"%e\t%e\n", theta1, theta2);
         }
 
 
         //POINCARÉ THETA 2 Y THETAPUNTO2
-        if (vtheta1>0.8 && vtheta1<0.9){
-            if (theta1>0.5 && theta1<0.6)
-                fprintf(f3,"%e%c\t%e\n", theta2, 44, vtheta2);
+        if ((vtheta1>-0.1) && (vtheta1<0.1)){
+            if ((theta1>-0.1) && (theta1<0.1)){
+                fprintf(f3,"%e\t%e\n", theta2, vtheta2);
+                }
         }
 
         //POINCARÉ THETA2 Y THETAPUNTO1
-        if (vtheta2>0.8 && vtheta2<0.9){
-            if (theta1>0.5 && theta1<0.6)
-                fprintf(f2,"%e%c\t%e\n", theta2, 44, vtheta1);
+        if ((vtheta2>-0.1) && (vtheta2<0.1)){
+            if ((theta1>-0.1) && (theta1<0.1))
+                fprintf(f4,"%e\t%e\n", theta2, vtheta1);
         }
 
+        //Escribimos todos los datos en un archivo.
+        fprintf(f5,"%e\t%e\t%e\t%e\n", theta1, theta2, vtheta1, vtheta2);
 
+        //ESCRIBIMOS LOS DATOS PARA REPRESENTAR LAS CURVAS DE LISSAJOUS
+        fprintf(f6,"%e\t%e\n", theta1, theta2);
     }
+
     fclose(f1);
     fclose(f2);
     fclose(f3);
     fclose(f4);
+    fclose(f5);
+    fclose(f6);
     return 0;
 }
 
-//FUNCIONES
+//FUNCIONES PARA CADA VARIABLE
 
 double thetapuntopunto1(double theta1, double theta2, double thetapunto1, double thetapunto2)
 {
@@ -151,7 +162,7 @@ double thetapunto(double theta1, double theta2, double E)
 
 double s;
 
-s=-sqrt(E-2*g*(cos(theta1))+g*(cos(theta2)));
+s=-sqrt(E-2*g*(1-cos(theta1))-g*(1-cos(theta2)));
 return s;
 
 }
